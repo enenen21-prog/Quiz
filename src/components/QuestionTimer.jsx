@@ -1,0 +1,31 @@
+import { useState, useEffect } from 'react';
+const PROGRESS_INTERVAL = 100;
+
+export default function QuestionTimer({ timeout, onTimeout, mode }) {
+  const [remainingTime, setRemainingTime] = useState(timeout);
+
+  useEffect(() => {
+    console.log('SETTING TIMEOUT');
+    const timer = setTimeout(onTimeout, timeout);
+    return () => {
+      console.log('CLEARING TIMEOUT');
+      clearTimeout(timer);
+    };
+  }, [timeout, onTimeout]);
+
+  useEffect(() => {
+    console.log('SETTING INTERVAL');
+    const interval = setInterval(() => {
+      setRemainingTime(
+        (prevRemainingTime) => prevRemainingTime - PROGRESS_INTERVAL,
+      );
+    }, PROGRESS_INTERVAL);
+
+    return () => {
+      console.log('CLEARING INTERVAL');
+      clearInterval(interval);
+    };
+  }, []);
+
+  return <progress id="question-time" max={timeout} value={remainingTime} className={mode}/>;
+}
